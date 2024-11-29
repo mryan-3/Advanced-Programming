@@ -9,12 +9,8 @@ public class WithdrawalTransaction extends BaseTransaction {
         super(amount, date);
     }
 
-    private boolean checkDepositAmount(int amt) {
-        if (amt < 0) {
-            return false;
-        } else {
-            return true;
-        }
+    private boolean checkWithdrawalAmount(int amt) {
+        return amt >= 0;
     }
 
     // Method to reverse the transaction
@@ -24,17 +20,22 @@ public class WithdrawalTransaction extends BaseTransaction {
 
     // Method to print a transaction receipt or details
     public void printTransactionDetails() {
-        System.out.println("Deposit Trasaction: " + this.toString());
+        System.out.println("Withdrawal Transaction: " + this.toString());
     }
 
     /*
     Oportunity for assignment: implementing different form of withdrawal
      */
     public void apply(BankAccount ba) {
+        if (!checkWithdrawalAmount(this.getAmount())) {
+            throw new IllegalArgumentException("Withdrawal amount must be non-negative");
+        }
+        
         double curr_balance = ba.getBalance();
-        if (curr_balance > getAmount()) {
-            double new_balance = curr_balance - getAmount();
-            ba.setBalance(new_balance);
+        if (curr_balance >= getAmount()) {
+            ba.setBalance(curr_balance - getAmount());
+        } else {
+            throw new IllegalStateException("Insufficient funds for withdrawal");
         }
     }
 
