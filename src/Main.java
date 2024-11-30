@@ -144,6 +144,15 @@ public class Main {
     }
 
 
+    public static void testReverse() {
+        Calendar d1 = new GregorianCalendar();
+        BankAccount ba = new BankAccount(1000);
+        WithdrawalTransaction wt = new WithdrawalTransaction(100, d1);
+        wt.apply(ba);
+        wt.reverse(ba);
+    }
+
+
     public static void main(String[] args) {
         // This is the client code
         // Uncomment the following lines to test the class which you would like to test
