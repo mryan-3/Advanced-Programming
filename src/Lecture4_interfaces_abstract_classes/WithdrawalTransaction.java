@@ -5,8 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 
 public class WithdrawalTransaction extends BaseTransaction {
+    private double originalBalance;
+    private boolean isReversed = false
+
     public WithdrawalTransaction(int amount, @NotNull Calendar date) {
         super(amount, date);
+        this.originalBalance = 0;
     }
 
     private boolean checkWithdrawalAmount(int amt) {
@@ -14,9 +18,18 @@ public class WithdrawalTransaction extends BaseTransaction {
     }
 
     // Method to reverse the transaction
-    public boolean reverse() {
+    public boolean reverse( BankAccount ba) {
+        if (isReversed) {
+            System.out.println("Transaction already reversed");
+            return false;
+        }
+
+        this.originalBalance = ba.getBalance();
+        ba.setBalance(currentBalance + getAmount());
+        isReversed = true;
+        System.out.println("Transaction Reversed");
         return true;
-    } // return true if reversal was successful
+    }
 
     // Method to print a transaction receipt or details
     public void printTransactionDetails() {
@@ -27,16 +40,13 @@ public class WithdrawalTransaction extends BaseTransaction {
     Oportunity for assignment: implementing different form of withdrawal
      */
     public void apply(BankAccount ba) {
-        if (!checkWithdrawalAmount(this.getAmount())) {
-            throw new IllegalArgumentException("Withdrawal amount must be non-negative");
-        }
-        
+         this.originalBalance = ba.getBalance();
+
         double curr_balance = ba.getBalance();
-        if (curr_balance >= getAmount()) {
-            ba.setBalance(curr_balance - getAmount());
-        } else {
-            throw new IllegalStateException("Insufficient funds for withdrawal");
-        }
+        if (curr_balance > getAmount()) {
+          double new_balance = curr_balance - getAmount();
+          ba.setBalance(new_balance);
+         }
     }
 
     /*
