@@ -39,14 +39,28 @@ public class WithdrawalTransaction extends BaseTransaction {
     /*
     Oportunity for assignment: implementing different form of withdrawal
      */
-    public void apply(BankAccount ba) {
+    public void apply(BankAccount ba) throws InsufficientFundsException {
          this.originalBalance = ba.getBalance();
+        double currentBalance = ba.getBalance();
+        double amountNotWithdrawn = 0;
+        try {
+           if (currentBalance >= getAmount()) {
+              double new_balance = currentBalance - getAmount();
+              ba.setBalance(new_balance);
+           } else if(currentBalance > 0){
+               ba.setBalance(0);
+               amountNotWithdrawn = getAmount() - currentBalance;
+               throw new InsufficientFundsException("Insufficient Funds. Amount not withdrawn: " + amountNotWithdrawn);
+           } else{
+               throw new InsufficientFundsException("Insufficient Funds");
+           }
 
-        double curr_balance = ba.getBalance();
-        if (curr_balance > getAmount()) {
-          double new_balance = curr_balance - getAmount();
-          ba.setBalance(new_balance);
-         }
+        } catch (InsufficientFundsException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        } finally {
+            System.out.println("Transaction Completed");
+        }
     }
 
     /*

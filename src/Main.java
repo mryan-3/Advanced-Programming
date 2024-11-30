@@ -152,6 +152,21 @@ public class Main {
         wt.reverse(ba);
     }
 
+    public static void testExceptionHandling() {
+        Calendar date = new GregorianCalendar();
+        BankAccount account = new BankAccount(500);
+
+        WithdrawalTransaction withdrawal = new WithdrawalTransaction(1000, date);
+
+        try {
+         // Attempt to apply the withdrawal
+            withdrawal.apply(account);
+        } catch (InsufficientFundsException e) {
+            System.out.println("Caught exception: " + e.getMessage());
+        }
+
+        System.out.println("Final account balance: " + account.getBalance());
+    }
 
     public static void main(String[] args) {
         // This is the client code
